@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+    {% if session['username'] %}
+    <h1>Welcome, here are all the birds currently logged in:</h1>
+
+    <!-- A table of logged-in users and the status of each -->
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Username</th>
+                <th scope="col">Status</th>
+                <th scope="col">Private Chat</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for username, status in logged_in_users.items() %}
+            <tr>
+                <td>{{ username }}</td>
+                <td>{{ status }}</td>
+                <!-- Add a link to start a private chat with each user -->
+                <td>
+                    {% if username != session['username'] %}
+                        <a href="{{ url_for('private_chat', recipient=username) }}" class="btn btn-sm btn-outline-secondary">
+                            Chat with {{ username }}
+                        </a>
+                    {% else %}
+                        <!-- Disable chat button for the current user -->
+                        <span class="text-muted">This is you</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <!-- Status update form for logged-in users -->
+    <form action="{{ url_for('set_status') }}" method="POST">
+        <h2 class="form-text">Would you like to update your status, {{ session['username'] }}?</h2>
+        <div class="input-group mb-3">
+            <input type="text" name="status" value="{{ logged_in_users[session['username']] }}" required class="form-control">
+            <button type="submit" class="btn btn-outline-primary">Set new status</button>
+        </div>
+    </form>
+
+    <!-- Post interaction section -->
+    <h2 class="mt-4">Posts</h2>
+    <div class="d-flex justify-content-start">
+        <a href="{{ url_for('view_posts') }}" class="btn btn-primary me-2">View All Posts</a>
+        <!-- Button trigger modal for creating a new post -->
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createPostModal">
+            Create New Post
+        </button>
+    </div>
+
+    {% else %}
+    <!-- Display two images in a single row, each taking up 50% of the screen -->
+    <div class="row">
+        <div class="col-6">
+            <img src="{{ url_for('static', filename='login_prompt.png') }}" alt="Please log in to use the chat" id="prompt">
+        </div>
+    </div>
+    <p class="mt-2">Would you like to <a href="{{ url_for('login') }}">login</a> and join the amazing birds above?</p>
+    {% endif %}
+
+    <!-- Post Creation Modal -->
+    <div class="modal fade" id="createPostModal" tabindex="-1" aria-labelledby="createPostModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createPostModalLabel">Create New Post</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Post creation form -->
+                    <form method="POST" action="{{ url_for('create_post') }}">
+                        <div class="mb-3">
+                            <textarea name="content" rows="4" cols="50" placeholder="Write something..." class="form-control" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Post</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

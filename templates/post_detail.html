@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block main %}
+<h2>{{ post['content'] }}</h2>
+
+<p> by {{ post['username'] }}</p>
+
+{% if post['username'] == session['username'] %}
+    <!-- Edit and Delete buttons for the post -->
+    <a href="{{ url_for('edit_post', post_id=post_id) }}" class="btn btn-warning">Edit</a>
+    <form action="{{ url_for('delete_post', post_id=post_id) }}" method="POST" style="display:inline;">
+        <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+{% endif %}
+
+<h3>Comments</h3>
+
+{% if post['comments'] %}
+    <ul>
+        {% for comment in post['comments'] %}
+            <li>
+                {{ comment['comment'] }} by {{ comment['username'] }} 
+                (Votes: {{ comment['votes'] }})
+
+                {% if session['username'] not in comment.get('voters', []) %}
+                    <!-- Upvote and Downvote buttons -->
+                    <form action="{{ url_for('vote_comment', post_id=post_id, comment_id=loop.index0) }}" method="POST" style="display:inline;">
+                        <button type="submit" name="vote" value="upvote" class="btn btn-sm btn-outline-success">👍</button>
+                        <button type="submit" name="vote" value="downvote" class="btn btn-sm btn-outline-danger">👎</button>
+                    </form>
+                {% else %}
+                    <span class="text-muted">You have already voted</span>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No comments yet. Be the first to comment!</p>
+{% endif %}
+
+<!-- Comment submission form -->
+<h3>Add a comment</h3>
+<form method="POST" action="{{ url_for('add_comment', post_id=post_id) }}">
+    <textarea name="comment" rows="4" cols="50" placeholder="Write a comment..." class="form-control mb-2" required></textarea>
+    <button type="submit" class="btn btn-primary">Comment</button>
+</form>
+
+{% endblock %}

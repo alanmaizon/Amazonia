@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <div id="container">
+        <div id="collection">
+            <div id="box" data-username="👨‍💻 Hum"><img src="{{ url_for('static', filename='bird1.png') }}"></div>
+            <div id="box" data-username="👩‍💻 Ali"><img src="{{ url_for('static', filename='bird3.png') }}"></div>
+            <div id="box" data-username="🐱 Cat"><img src="{{ url_for('static', filename='bird4.png') }}"></div>
+            <div id="box" data-username="🐶 Dog"><img src="{{ url_for('static', filename='bird5.png') }}"></div>
+            <div id="box" data-username="🦄 Uni"><img src="{{ url_for('static', filename='bird6.png') }}"></div>
+            <div id="box" data-username="🦉 Owl"><img src="{{ url_for('static', filename='bird7.png') }}"></div>
+            <div id="box" data-username="👨‍💻 Hum"><img src="{{ url_for('static', filename='bird11.png') }}"></div>
+            <div id="box" data-username="👩‍💻 Ali"><img src="{{ url_for('static', filename='bird31.png') }}"></div>
+            <div id="box" data-username="🐱 Cat"><img src="{{ url_for('static', filename='bird41.png') }}"></div>
+            <div id="box" data-username="🐶 Dog"><img src="{{ url_for('static', filename='bird51.png') }}"></div>
+            <div id="box" data-username="🦄 Uni"><img src="{{ url_for('static', filename='bird61.png') }}"></div>
+            <div id="box" data-username="🦉 Owl"><img src="{{ url_for('static', filename='bird71.png') }}"></div>
+            <div id="box" data-username="👨‍💻 Hum"><img src="{{ url_for('static', filename='bird81.png') }}"></div>
+            <div id="box" data-username="👩‍💻 Ali"><img src="{{ url_for('static', filename='bird91.png') }}"></div>
+            <div id="box" data-username="🐱 Cat"><img src="{{ url_for('static', filename='bird9.png') }}"></div>
+            <div id="box" data-username="🐶 Dog"><img src="{{ url_for('static', filename='bird8.png') }}"></div>
+            <div id="box" data-username="🦄 Uni"><img src="{{ url_for('static', filename='bird2.png') }}"></div>
+            <div id="box" data-username="🦉 Owl"><img src="{{ url_for('static', filename='bird21.png') }}"></div>
+        </div>
+    </div>
+    <h2>Login</h2>
+
+    <!-- Display flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="alert alert-danger">
+                {% for category, message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Login form -->
+    <form method="POST" action="{{ url_for('login') }}">
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input list="usernames" name="username" id="username" class="form-control" required placeholder="Enter your username">
+
+            <!-- Datalist for username suggestions -->
+            <datalist id="usernames">
+                <option value="👨‍💻 Human">👨‍💻 Human</option>
+                <option value="👩‍💻 Alien">👩‍💻 Alien</option>
+                <option value="🐱 Cat">🐱 Cat</option>
+                <option value="🐶 Dog">🐶 Dog</option>
+                <option value="🦄 Unicorn">🦄 Unicorn</option>
+                <option value="🦉 Owl">🦉 Owl</option>
+            </datalist>
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+
+    <script>
+        var container = document.getElementById("container");
+        var content = document.getElementById("collection");
+        var hammer = new Hammer(container);
+
+        var initialX = 0;
+        var deltaX = 0;
+        var offset = initialX + deltaX;
+
+        hammer.on("panleft panright", function(ev) {
+            deltaX = ev.deltaX;
+            offset = initialX + deltaX;
+
+            container.scroll(-offset, 0);
+        });
+
+        container.addEventListener("mouseup", function(e) {
+            initialX = offset;
+        });
+
+        // JavaScript to handle the click event on the boxes
+        var boxes = document.querySelectorAll('#box');
+        var usernameInput = document.getElementById('username');
+
+        boxes.forEach(function(box) {
+            box.addEventListener('click', function() {
+                var username = this.getAttribute('data-username');
+                usernameInput.value = username;  // Set the input field value
+            });
+        });
+    </script>
+{% endblock %}

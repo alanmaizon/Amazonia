@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Fluffy Parakeet</title>
+    <title>Amazonia</title>
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='icon.png') }}">
     <!-- Custom stylesheet -->
@@ -26,7 +26,7 @@
         <!-- Navbar -->
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <a class="navbar-brand px-2" href="/">
-                <img src="{{ url_for('static', filename='ico.png') }}" alt="Logo"> Fluffy Parakeet
+                <img src="{{ url_for('static', filename='icon.png') }}" alt="Logo"> Amazonia
             </a>
             <div id="basenav2" class="collapse navbar-collapse justify-content-end">
                 <!-- If the user is logged in, show the logout link, otherwise show the login link -->
@@ -61,7 +61,7 @@
             {% if session['username'] %}
             <div class="col-md-4">
                 <div class="container mt-3">
-                    <h2 class="text-center">Chat Room</h2>
+                    <h2 class="text-center">Public Room</h2>
                     <div id="chatArea" class="border p-3 mb-3" style="height: 300px; overflow-y: scroll;">
                         <!-- Chat messages will appear here -->
                     </div>
@@ -77,28 +77,36 @@
             {% endif %}
         </div>
     </div>
-
+    <div>
+        {% block content %}
+        {% endblock %}
+    </div>
     <script>
         {% if session['username'] %}
         var socket = io();
 
+        // Load previous messages into the chat area
+        var previousMessages = {{ previous_messages|safe }};
+        var chatArea = $('#chatArea');
+        for (var i = 0; i < previousMessages.length; i++) {
+            chatArea.append('<p><strong>' + previousMessages[i].username + ':</strong> ' + previousMessages[i].message + '</p>');
+        }
+        chatArea.scrollTop(chatArea.prop('scrollHeight'));
+
         // Handle incoming messages
         socket.on('receive_message', function(data) {
-            var chatArea = $('#chatArea');
             chatArea.append('<p><strong>' + data.username + ':</strong> ' + data.message + '</p>');
             chatArea.scrollTop(chatArea.prop('scrollHeight'));
         });
 
         // Handle user connection notification
         socket.on('user_connected', function(data) {
-            var chatArea = $('#chatArea');
             chatArea.append('<p class="text-success"><em>' + data.username + ' has joined the chat.</em></p>');
             chatArea.scrollTop(chatArea.prop('scrollHeight'));
         });
 
         // Handle user disconnection notification
         socket.on('user_disconnected', function(data) {
-            var chatArea = $('#chatArea');
             chatArea.append('<p class="text-danger"><em>' + data.username + ' has left the chat.</em></p>');
             chatArea.scrollTop(chatArea.prop('scrollHeight'));
         });

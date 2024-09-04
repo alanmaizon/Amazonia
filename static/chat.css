@@ -19,6 +19,27 @@ table {
     overflow-y: scroll;
 }
 
+#fade-section {
+    filter: blur(10px);
+    transform: translateY(-75%);
+    opacity: 0;
+    animation: drop 2s forwards;
+}
+
+/* Animation Keyframes */
+@keyframes drop {
+    0% {
+        filter: blur(10px);
+        transform: translateY(-75%);
+        opacity: 0;
+    }
+    100% {
+        filter: blur(0);
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
 #box {
     height: 100px;
     width: 100px;
@@ -32,7 +53,7 @@ table {
 
 #container {
     display: flex;
-    padding: 50px 0px 50px 0px;
+    padding: 0;
     overflow: hidden;
 }
 
@@ -165,7 +186,42 @@ img {
 #basenav2 {
     padding: 0 40px;
 }
+
 #prompt{
-    width: 60vw;
+    width: 90vw;
     height: auto;
+}
+
+#votes img {
+    width: 15px;
+    height: auto;
+}
+
+.container-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;  /* Two equal-width columns */
+    gap: 20px;  /* Space between the two columns */
+    margin-top: 20px;
+}
+
+/* Style for the left column (login form and messages) */
+.left-column {
+    padding: 20px;
+}
+
+/* Style for the right column (image display) */
+.right-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Style for the image */
+#full-res-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+
 }

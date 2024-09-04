@@ -24,9 +24,9 @@
 
                 {% if session['username'] not in comment.get('voters', []) %}
                     <!-- Upvote and Downvote buttons -->
-                    <form action="{{ url_for('vote_comment', post_id=post_id, comment_id=loop.index0) }}" method="POST" style="display:inline;">
-                        <button type="submit" name="vote" value="upvote" class="btn btn-sm btn-outline-success">👍</button>
-                        <button type="submit" name="vote" value="downvote" class="btn btn-sm btn-outline-danger">👎</button>
+                    <form id="votes" action="{{ url_for('vote_comment', post_id=post_id, comment_id=loop.index0) }}" method="POST" style="display:inline;">
+                        <button type="submit" name="vote" value="upvote" class="btn btn-sm btn"><img src="{{ url_for('static', filename='thumbs-up-solid.svg') }}" alt="👍"></button>
+                        <button type="submit" name="vote" value="downvote" class="btn btn-sm btn"><img src="{{ url_for('static', filename='thumbs-down-solid.svg') }}" alt="👎"></button>
                     </form>
                 {% else %}
                     <span class="text-muted">You have already voted</span>
@@ -43,6 +43,7 @@
 <form method="POST" action="{{ url_for('add_comment', post_id=post_id) }}">
     <textarea name="comment" rows="4" cols="50" placeholder="Write a comment..." class="form-control mb-2" required></textarea>
     <button type="submit" class="btn btn-primary">Comment</button>
+    <a href="{{ url_for('home') }}" class="btn btn-success">Back to Menu</a>
 </form>
 
 {% endblock %}

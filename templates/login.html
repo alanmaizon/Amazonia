@@ -3,58 +3,57 @@
 {% block main %}
     <div id="container">
         <div id="collection">
-            <div id="box" data-username="👨‍💻 Hum"><img src="{{ url_for('static', filename='bird1.png') }}"></div>
-            <div id="box" data-username="👩‍💻 Ali"><img src="{{ url_for('static', filename='bird3.png') }}"></div>
-            <div id="box" data-username="🐱 Cat"><img src="{{ url_for('static', filename='bird4.png') }}"></div>
-            <div id="box" data-username="🐶 Dog"><img src="{{ url_for('static', filename='bird5.png') }}"></div>
-            <div id="box" data-username="🦄 Uni"><img src="{{ url_for('static', filename='bird6.png') }}"></div>
-            <div id="box" data-username="🦉 Owl"><img src="{{ url_for('static', filename='bird7.png') }}"></div>
-            <div id="box" data-username="👨‍💻 Hum"><img src="{{ url_for('static', filename='bird11.png') }}"></div>
-            <div id="box" data-username="👩‍💻 Ali"><img src="{{ url_for('static', filename='bird31.png') }}"></div>
-            <div id="box" data-username="🐱 Cat"><img src="{{ url_for('static', filename='bird41.png') }}"></div>
-            <div id="box" data-username="🐶 Dog"><img src="{{ url_for('static', filename='bird51.png') }}"></div>
-            <div id="box" data-username="🦄 Uni"><img src="{{ url_for('static', filename='bird61.png') }}"></div>
-            <div id="box" data-username="🦉 Owl"><img src="{{ url_for('static', filename='bird71.png') }}"></div>
-            <div id="box" data-username="👨‍💻 Hum"><img src="{{ url_for('static', filename='bird81.png') }}"></div>
-            <div id="box" data-username="👩‍💻 Ali"><img src="{{ url_for('static', filename='bird91.png') }}"></div>
-            <div id="box" data-username="🐱 Cat"><img src="{{ url_for('static', filename='bird9.png') }}"></div>
-            <div id="box" data-username="🐶 Dog"><img src="{{ url_for('static', filename='bird8.png') }}"></div>
-            <div id="box" data-username="🦄 Uni"><img src="{{ url_for('static', filename='bird2.png') }}"></div>
-            <div id="box" data-username="🦉 Owl"><img src="{{ url_for('static', filename='bird21.png') }}"></div>
+            <div id="box" data-username="Charly" data-full-res="{{ url_for('static', filename='bird1.png') }}"><img src="{{ url_for('static', filename='bird1.png') }}"></div>
+            <div id="box" data-username="Yess" data-full-res="{{ url_for('static', filename='bird11.png') }}"><img src="{{ url_for('static', filename='bird11.png') }}"></div>
+            <div id="box" data-username="Ali" data-full-res="{{ url_for('static', filename='bird31.png') }}"><img src="{{ url_for('static', filename='bird31.png') }}"></div>
+            <div id="box" data-username="Sean" data-full-res="{{ url_for('static', filename='bird3.png') }}"><img src="{{ url_for('static', filename='bird3.png') }}"></div>
+            <div id="box" data-username="Saoirse" data-full-res="{{ url_for('static', filename='bird4.png') }}"><img src="{{ url_for('static', filename='bird4.png') }}"></div>
+            <div id="box" data-username="Mary" data-full-res="{{ url_for('static', filename='bird51.png') }}"><img src="{{ url_for('static', filename='bird51.png') }}"></div>
+            <div id="box" data-username="John" data-full-res="{{ url_for('static', filename='bird61.png') }}"><img src="{{ url_for('static', filename='bird61.png') }}"></div>
+            <div id="box" data-username="Greta" data-full-res="{{ url_for('static', filename='bird5.png') }}"><img src="{{ url_for('static', filename='bird5.png') }}"></div>
+            <div id="box" data-username="Anna" data-full-res="{{ url_for('static', filename='bird6.png') }}"><img src="{{ url_for('static', filename='bird6.png') }}"></div>
+            <div id="box" data-username="Laura" data-full-res="{{ url_for('static', filename='bird7.png') }}"><img src="{{ url_for('static', filename='bird7.png') }}"></div>
+            <div id="box" data-username="Sabrina" data-full-res="{{ url_for('static', filename='bird41.png') }}"><img src="{{ url_for('static', filename='bird41.png') }}"></div>
+            <div id="box" data-username="Owl" data-full-res="{{ url_for('static', filename='bird71.png') }}"><img src="{{ url_for('static', filename='bird71.png') }}"></div>
+            <div id="box" data-username="Fred" data-full-res="{{ url_for('static', filename='bird81.png') }}"><img src="{{ url_for('static', filename='bird81.png') }}"></div>
+            <div id="box" data-username="Alex" data-full-res="{{ url_for('static', filename='bird91.png') }}"><img src="{{ url_for('static', filename='bird91.png') }}"></div>
+            <div id="box" data-username="Catriel" data-full-res="{{ url_for('static', filename='bird9.png') }}"><img src="{{ url_for('static', filename='bird9.png') }}"></div>
+            <div id="box" data-username="Monica" data-full-res="{{ url_for('static', filename='bird8.png') }}"><img src="{{ url_for('static', filename='bird8.png') }}"></div>
+            <div id="box" data-username="Brian" data-full-res="{{ url_for('static', filename='bird2.png') }}"><img src="{{ url_for('static', filename='bird2.png') }}"></div>
+            <div id="box" data-username="Flavia" data-full-res="{{ url_for('static', filename='bird21.png') }}"><img src="{{ url_for('static', filename='bird21.png') }}"></div>
         </div>
     </div>
-    <h2>Login</h2>
+    <div class="container-grid" id="fade-section">
+        <!-- Left Column for the login form and flash messages -->
+        <div class="left-column">
+            <h2>Login</h2>
 
-    <!-- Display flash messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="alert alert-danger">
-                {% for category, message in messages %}
-                    <p>{{ message }}</p>
-                {% endfor %}
-            </div>
-        {% endif %}
-    {% endwith %}
+            <!-- Display flash messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="alert alert-danger">
+                        {% for category, message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
 
-    <!-- Login form -->
-    <form method="POST" action="{{ url_for('login') }}">
-        <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input list="usernames" name="username" id="username" class="form-control" required placeholder="Enter your username">
-
-            <!-- Datalist for username suggestions -->
-            <datalist id="usernames">
-                <option value="👨‍💻 Human">👨‍💻 Human</option>
-                <option value="👩‍💻 Alien">👩‍💻 Alien</option>
-                <option value="🐱 Cat">🐱 Cat</option>
-                <option value="🐶 Dog">🐶 Dog</option>
-                <option value="🦄 Unicorn">🦄 Unicorn</option>
-                <option value="🦉 Owl">🦉 Owl</option>
-            </datalist>
+            <!-- Login form -->
+            <form method="POST" action="{{ url_for('login') }}">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input list="usernames" name="username" id="username" class="form-control" required placeholder="Enter your username">
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
         </div>
-        <button type="submit" class="btn btn-primary">Login</button>
-    </form>
 
+        <!-- Right column for full-resolution image display -->
+        <div class="right-column">
+            <img id="full-res-image" src="" alt="Click on a box to view the full image" style="max-width: 100%; max-height: 400px; display: none;">
+        </div>
+    </div>
     <script>
         var container = document.getElementById("container");
         var content = document.getElementById("collection");
@@ -67,7 +66,6 @@
         hammer.on("panleft panright", function(ev) {
             deltaX = ev.deltaX;
             offset = initialX + deltaX;
-
             container.scroll(-offset, 0);
         });
 
@@ -75,14 +73,22 @@
             initialX = offset;
         });
 
-        // JavaScript to handle the click event on the boxes
+        // JavaScript to handle the click event on the boxes and update the full-resolution image
         var boxes = document.querySelectorAll('#box');
         var usernameInput = document.getElementById('username');
+        var fullResImage = document.getElementById('full-res-image');
 
         boxes.forEach(function(box) {
             box.addEventListener('click', function() {
                 var username = this.getAttribute('data-username');
-                usernameInput.value = username;  // Set the input field value
+                var fullResUrl = this.getAttribute('data-full-res');
+
+                // Update the input field with the username
+                usernameInput.value = username;
+
+                // Display the full-resolution image in the right column
+                fullResImage.src = fullResUrl;
+                fullResImage.style.display = "block";  // Make sure the image is visible
             });
         });
     </script>

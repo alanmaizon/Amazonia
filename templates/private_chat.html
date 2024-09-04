@@ -13,12 +13,51 @@
             padding: 10px;
             margin-bottom: 10px;
         }
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 400px;
+            padding: 10px;
+            overflow-y: scroll;
+            background-color: #f7f7f7;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+
+        .message {
+            max-width: 60%;
+            padding: 10px;
+            border-radius: 20px;
+            margin: 5px 0;
+            font-size: 16px;
+            word-wrap: break-word;
+        }
+
+        .message-user {
+            align-self: flex-end;
+            background-color: #007bff;
+            color: white;
+        }
+
+        .message-recipient {
+            align-self: flex-start;
+            background-color: #e5e5ea;
+            color: black;
+        }
+
+        .message-container {
+            display: flex;
+            flex-direction: column;
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1 class="mt-5">Private Chat with {{ recipient }}</h1>
-        <div id="chat"></div>
+        <div id="chat" class="chat-container">
+            <!-- Previous messages will be loaded here -->
+        </div>
         <form id="chat-form">
             <div class="input-group mb-3">
                 <input type="text" id="message" class="form-control" placeholder="Type a message" required>
@@ -31,61 +70,93 @@
     <script>
         var socket = io();
         var room = "{{ room }}";
-
-        // Join the room on connection
-        socket.emit('join_room', {room: room});
-
-        // Listen for private messages
-        socket.on('receive_private_message', function(data) {
-            var chat = document.getElementById('chat');
+        var previousMessages = {{ previous_messages|safe }};
+    
+        // Load previous messages into the chat window
+        var chat = document.getElementById('chat');
+        for (var i = 0; i < previousMessages.length; i++) {
             var messageElement = document.createElement('div');
-            messageElement.textContent = data.username + ': ' + data.message;
+            messageElement.classList.add('message-container');
+    
+            var messagePill = document.createElement('div');
+            messagePill.classList.add('message');
+            messagePill.textContent = previousMessages[i].message;
+    
+            if (previousMessages[i].username === "{{ username }}") {
+                messagePill.classList.add('message-user');
+            } else {
+                messagePill.classList.add('message-recipient');
+            }
+    
+            messageElement.appendChild(messagePill);
             chat.appendChild(messageElement);
-            chat.scrollTop = chat.scrollHeight; // Scroll to the bottom
+        }
+    
+        chat.scrollTop = chat.scrollHeight;
+    
+        // Listen for new private messages
+        socket.on('receive_private_message', function(data) {
+            var messageElement = document.createElement('div');
+            messageElement.classList.add('message-container');
+    
+            var messagePill = document.createElement('div');
+            messagePill.classList.add('message');
+            messagePill.textContent = data.message;
+    
+            if (data.username === "{{ username }}") {
+                messagePill.classList.add('message-user');
+            } else {
+                messagePill.classList.add('message-recipient');
+            }
+    
+            messageElement.appendChild(messagePill);
+            chat.appendChild(messageElement);
+            chat.scrollTop = chat.scrollHeight; 
+    
+            // Only show notification and sound if the message is from someone else
+            if (data.username !== "{{ username }}") {
+                showNotification('New Message from ' + data.username, data.message);
+                playSound();
+            }
         });
-
+    
         // Handle form submission for sending messages
         document.getElementById('chat-form').addEventListener('submit', function(event) {
             event.preventDefault();
             var messageInput = document.getElementById('message');
             var message = messageInput.value;
             socket.emit('send_private_message', {message: message, room: room, recipient: "{{ recipient }}"});
-            messageInput.value = ''; // Clear the input
+            messageInput.value = ''; 
         });
-
-        // Listen for users joining the room
-        socket.on('user_joined_room', function(data) {
-            var chat = document.getElementById('chat');
-            var messageElement = document.createElement('div');
-            messageElement.classList.add('text-success');
-            messageElement.textContent = data.username + ' has joined the chat';
-            chat.appendChild(messageElement);
-            chat.scrollTop = chat.scrollHeight;
-        });
-
-        // Listen for users leaving the room
-        socket.on('user_left_room', function(data) {
-            var chat = document.getElementById('chat');
-            var messageElement = document.createElement('div');
-            messageElement.classList.add('text-danger');
-            messageElement.textContent = data.username + ' has left the chat';
-            chat.appendChild(messageElement);
-            chat.scrollTop = chat.scrollHeight;
-        });
-
+    
         // Close the chat and leave the room
         document.getElementById('close-chat').addEventListener('click', function() {
             socket.emit('leave_room', {room: room});
             window.location.href = "{{ url_for('home') }}";
         });
-
-        // Ensure the room is left when the user leaves the page
+    
         window.addEventListener('beforeunload', function () {
             socket.emit('leave_room', {room: room});
         });
-
-        // Connect to the socket
+    
+        if (Notification.permission !== "granted") {
+            Notification.requestPermission();
+        }
+    
+        function showNotification(title, body) {
+            if (Notification.permission === "granted") {
+                new Notification(title, { body: body });
+            }
+        }
+    
+        function playSound() {
+            var audio = new Audio("{{ url_for('static', filename='bip.mp3') }}");
+            audio.play();
+        }
+    
+        socket.emit('join_room', {room: room});
+    
         socket.connect();
     </script>
-</body>
+    
 </html>

@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_socketio import SocketIO, emit, join_room, leave_room
+import json
 
 # Initialize the Flask app
 app = Flask(__name__)
@@ -18,12 +19,20 @@ user_datastore = {}
 posts = {}
 post_id_counter = 1
 
+# In-memory data store for previous chat messages
+chat_log = {}
 
+# Home route to load previous messages for the public room
 @app.route('/')
 def home():
     if 'username' in session and session['username'] not in user_datastore:
         return redirect(url_for('logout'))
-    return render_template('home.html', logged_in_users=user_datastore)
+    
+    # Retrieve previous messages for the public room
+    previous_messages = chat_log.get('public', [])
+    previous_messages_json = json.dumps(previous_messages)
+    
+    return render_template('home.html', logged_in_users=user_datastore, previous_messages=previous_messages_json)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -155,12 +164,18 @@ def chat():
         return redirect(url_for('home'))
     return render_template('chat.html', username=session['username'])
 
-
-# Handle messages
+# Handle messages in the public chat room
 @socketio.on('send_message')
 def handle_send_message(data):
     username = session.get('username')
     message = data['message']
+    
+    # Store the message in the public chat log
+    public_room = 'public'
+    if public_room not in chat_log:
+        chat_log[public_room] = []
+    chat_log[public_room].append({'username': username, 'message': message})
+    
     emit('receive_message', {'username': username, 'message': message}, broadcast=True)
 
 # Handle client connection
@@ -177,20 +192,31 @@ def handle_disconnect():
     if username:
         emit('user_disconnected', {'username': username}, broadcast=True)
 
-# Handle messages in private chat rooms
 @app.route('/chat/<recipient>')
 def private_chat(recipient):
     if 'username' not in session:
         return redirect(url_for('home'))
     username = session['username']
     room = f"{min(username, recipient)}_{max(username, recipient)}"  # Unique room identifier
-    return render_template('private_chat.html', username=username, recipient=recipient, room=room)
 
+    # Convert previous messages to JSON to be sent to the client
+    previous_messages = chat_log.get(room, [])
+    previous_messages_json = json.dumps(previous_messages)
+    
+    return render_template('private_chat.html', username=username, recipient=recipient, room=room, previous_messages=previous_messages_json)
+
+# Handle messages in private chat rooms
 @socketio.on('send_private_message')
 def handle_send_private_message(data):
     username = session.get('username')
     room = data['room']
     message = data['message']
+    
+    # Store the message in the chat log
+    if room not in chat_log:
+        chat_log[room] = []
+    chat_log[room].append({'username': username, 'message': message})
+    
     emit('receive_private_message', {'username': username, 'message': message}, room=room)
 
 # Handle joining a private room

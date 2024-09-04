@@ -1,4 +1,4 @@
-# Fluffy Parakeet
+# Amazonia
 
 ## Table of Contents
 - [Introduction](#introduction)
@@ -26,8 +26,8 @@ This Flask Chat Application provides a real-time chat platform with features inc
 1. **Clone the Repository:**
 
     ```bash
-    git clone https://github.com/alanmaizon/fluffyparakeet.git
-    cd flask-chat-app
+    git clone https://github.com/alanmaizon/amazonia.git
+    cd amazonia
     ```
 
 2. **Create and Activate a Virtual Environment:**

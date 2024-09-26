@@ -1,8 +1,7 @@
 Flask==2.3.2
 Flask-SocketIO==5.3.5
 python-socketio==5.8.0
-eventlet==0.33.1  # If you choose to use eventlet
-# OR
-# gevent==23.7.0  # If you choose to use gevent
+eventlet==0.33.1
+dnspython==2.3.0  # Specify a compatible version with eventlet
 jinja2==3.1.2
 gunicorn==20.1.0
